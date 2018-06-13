@@ -1,0 +1,10 @@
+DATA_PATH = '/home/pablo/GDrive/BigSocialData/twitter/reporte_08_02'
+
+AUTH_DATA = [
+    dict(consumer_key='fdjfgdagndfgjnfdngjfd',
+         consumer_secret='fdjfgdagndfgjnfdngjfdfdjfgdagndfgjnfdngjfd'),
+
+    dict(consumer_key='fdjfgdagndfgjnfdngjfdhghg',
+         consumer_secret='fdjfgdagndfgjnfdngjfdhghgfdjfgdagndfgjnfdngjfdhghg')
+
+]
