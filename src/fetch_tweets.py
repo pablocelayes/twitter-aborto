@@ -39,15 +39,12 @@ def fetch_tweets(db, hashtags, posicion):
 
 hashtags = {
     "si": ["#abortolegal", "#abortolegalya", "#abortolegalesvida",
-            "#AbortoLegalEsSalud", "#novotencontralasmujeres"],
+            "#AbortoLegalEsSalud", "#novotencontralasmujeres",
+            "#quesealey", "#queelabortosealey"],
     "no": ["#elijamoslas2vidas", "#noalaborto", "#noalabortolegal",
-           "#salvemoslasdosvidas"]
+           "#salvemoslasdosvidas", "#SalvemosLas2Vidas", "#ArgentinaEsProvida",
+           "#CuidemoslasDosVidas", "#AbortoLegalEsMuerte"]
 }
-
-hashtags["si"] += ["#quesealey", "#queelabortosealey"]
-
-hashtags["no"] += ["#SalvemosLas2Vidas", "#ArgentinaEsProvida",
-  "#CuidemoslasDosVidas", "#AbortoLegalEsMuerte"]
 
 if __name__ == '__main__':
 
