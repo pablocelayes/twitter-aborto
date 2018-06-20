@@ -9,11 +9,7 @@ from pymongo import MongoClient
 
 MONGO_HOST= 'mongodb://localhost/twitterdata'
 
-hoy = date.today().strftime("%Y-%m-%d")
-
-desde = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
-
-def fetch_tweets(db, hashtags, posicion):
+def fetch_tweets(db, hashtags, posicion, desde, hasta):
     coll = db.abortolegal
     query = ' OR '.join(hashtags[posicion])
     count = 0
@@ -23,7 +19,7 @@ def fetch_tweets(db, hashtags, posicion):
                            count=100,
                            result_type="recent",
                            since=desde,
-                           until=hoy, 
+                           until=hasta, 
                            lang="es").items():
         data = status._json
         data['posicion'] = posicion
@@ -32,7 +28,7 @@ def fetch_tweets(db, hashtags, posicion):
             coll.insert(data)
 
         count += 1
-        if count % 100 == 0:
+        if count % 500 == 0:
             print count
         if count % 10000 == 0:
             TW.get_fresh_connection()
@@ -40,20 +36,39 @@ def fetch_tweets(db, hashtags, posicion):
 hashtags = {
     "si": ["#abortolegal", "#abortolegalya", "#abortolegalesvida",
             "#AbortoLegalEsSalud", "#novotencontralasmujeres",
-            "#quesealey", "#queelabortosealey"],
+            "#quesealey", "#queelabortosealey",
+            "#AbortoSeraLey" # desde 13/6
+    ],
     "no": ["#elijamoslas2vidas", "#noalaborto", "#noalabortolegal",
            "#salvemoslasdosvidas", "#SalvemosLas2Vidas", "#ArgentinaEsProvida",
-           "#CuidemoslasDosVidas", "#AbortoLegalEsMuerte"]
+           "#CuidemoslasDosVidas", "#AbortoLegalEsMuerte",
+           "#NoAlAbortoEnArgentina" # desde 13/6
+    ]
 }
 
 if __name__ == '__main__':
+    hasta = date.today().strftime("%Y-%m-%d")
+    desde = (date.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 
     client = MongoClient(MONGO_HOST)
 
     db = client.twitterdata
 
-    TW.get_fresh_connection()
-    fetch_tweets(db, hashtags, "si")
+    hashtags = {
+        "si": ["#abortolegal", "#abortolegalya", "#abortolegalesvida",
+                "#AbortoLegalEsSalud", "#novotencontralasmujeres",
+                "#quesealey", "#queelabortosealey",
+                "#AbortoSeraLey" # desde 13/6
+        ],
+        "no": ["#elijamoslas2vidas", "#noalaborto", "#noalabortolegal",
+               "#salvemoslasdosvidas", "#SalvemosLas2Vidas", "#ArgentinaEsProvida",
+               "#CuidemoslasDosVidas", "#AbortoLegalEsMuerte",
+               "#NoAlAbortoEnArgentina" # desde 13/6
+        ]
+    }
 
     TW.get_fresh_connection()
-    fetch_tweets(db, hashtags, "no")
+    fetch_tweets(db, hashtags, "si", desde, hasta)
+
+    TW.get_fresh_connection()
+    fetch_tweets(db, hashtags, "no", desde, hasta)
