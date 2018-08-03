@@ -19,7 +19,7 @@ COLLECTION = DB.abortolegal_agosto
 
 HT_THRESHOLD = 0.01  #determina cuales hashtags se usaran para bajar y cuales no a partir de su frecuencia.
 
-HT_UPDATE_INTERVAL = 60 * 60 * 6 
+HT_UPDATE_INTERVAL = 60 * 60
 # HT_UPDATE_INTERVAL = 0
 
 def update_terminos():
@@ -83,20 +83,21 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 if __name__ == '__main__':
-
-    # for i in range(1,11):
-    LAST_HASHTAG_UPDATE = time.time()
-    i = 0        
+    last_hashtag_update = time.time()
     terminos = load_terminos()
+
+    i = 0        
+    # for i in range(1,11):
     while True:
         i += 1
         print "Round %04d %s" % (i, datetime.now().strftime("%d/%m: %H:%M"))    
 
-        if time.time() - LAST_HASHTAG_UPDATE > HT_UPDATE_INTERVAL:
+        if time.time() - last_hashtag_update > HT_UPDATE_INTERVAL:
             print "Actualizando lista de hashtags"
             update_terminos()
             terminos = load_terminos()    
             print terminos
+            last_hashtag_update = time.time()
 
         TW.get_fresh_connection()
         print(TW.conn_.auth.consumer_key)
@@ -104,5 +105,3 @@ if __name__ == '__main__':
         listener = MyStreamListener(collection=COLLECTION, time_limit=60) 
         myStream = tweepy.Stream(auth=TW.conn_.auth, listener=listener)
         myStream.filter(languages=['es'], track=terminos)
-
-
