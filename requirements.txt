@@ -1,0 +1,4 @@
+ipdb==0.10.3
+ipython==5.4.1
+pymongo==3.6.1
+tweepy==3.6.0
