@@ -17,31 +17,6 @@ DB = MongoClient(MONGO_HOST).twitterdata
 
 COLLECTION = DB.abortolegal_agosto
 
-HT_THRESHOLD = 0.01  #determina cuales hashtags se usaran para bajar y cuales no a partir de su frecuencia.
-
-HT_UPDATE_INTERVAL = 60 * 60
-# HT_UPDATE_INTERVAL = 0
-
-def update_terminos():
-    hashtags_counts = Counter()
-    for t in COLLECTION.find():
-        if "retweeted_status" in t:
-            t = t["retweeted_status"]
-            if "extended_tweet" in t:
-               t = t["extended_tweet"]
-        if "entities" in t:
-            for ht in t["entities"]["hashtags"]:
-                hashtags_counts[ht['text']] += 1
-    
-    n_hashtags = sum(hashtags_counts.values())
-
-    terminos = [t for t, c in hashtags_counts.items() if c * (1.0 / n_hashtags) > HT_THRESHOLD]
-
-    with open('terminos.json','w') as f:
-        json.dump(terminos,f,indent=2)
-
-    return terminos
-
 def load_terminos():
     with open('terminos_start.json') as f:
         terminos = json.load(f)
@@ -83,25 +58,20 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 if __name__ == '__main__':
-    last_hashtag_update = time.time()
-    terminos = load_terminos()
-
     i = 0        
     # for i in range(1,11):
     while True:
         i += 1
         print "Round %04d %s" % (i, datetime.now().strftime("%d/%m: %H:%M"))    
 
-        if time.time() - last_hashtag_update > HT_UPDATE_INTERVAL:
-            print "Actualizando lista de hashtags"
-            update_terminos()
-            terminos = load_terminos()    
-            print terminos
-            last_hashtag_update = time.time()
+        terminos = load_terminos()    
 
         TW.get_fresh_connection()
         print(TW.conn_.auth.consumer_key)
 
         listener = MyStreamListener(collection=COLLECTION, time_limit=60) 
         myStream = tweepy.Stream(auth=TW.conn_.auth, listener=listener)
-        myStream.filter(languages=['es'], track=terminos)
+        try:
+            myStream.filter(languages=['es'], track=terminos)
+        except Exception as e:
+            print(e)
