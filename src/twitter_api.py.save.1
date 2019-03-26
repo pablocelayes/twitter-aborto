@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from tweepy import Cursor, AppAuthHandler, OAuthHandler, API
@@ -31,7 +30,7 @@ class APIHandler(object):
             try:
                 self.index = (self.index + 1) % len(self.auth_data)
                 d = self.auth_data[self.index]
-                print ("Switching to API Credentials %d" % self.index)
+                print ("Switching to API Credentials) #%d" % self.index
 
                 # auth = OAuthHandler(d['consumer_key'], d['consumer_secret'])
                 # auth.set_access_token(d['access_token'], d['access_token_secret'])
@@ -40,7 +39,7 @@ class APIHandler(object):
                 self.conn_ = API(auth_handler=auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
                 self.nreqs = 0
                 return self.conn_
-            except TweepError as e:
+            except TweepError, e:
                 print("Error trying to connect: %s" % e.message)
                 time.sleep(10)
 
@@ -55,16 +54,16 @@ class APIHandler(object):
                 # if not fids:
                 #     # terminamos
 
-                print ("fetched %d followers so far." % len(fids))
-            except TweepError as e:
+                print "fetched %d followers so far." % len(fids)
+            except TweepError, e:
                 if not 'rate limit' in e.reason.lower():
                     raise e
                 else:
                     conns_tried += 1
                     if conns_tried == len(self.auth_data):
                         nmins = 15
-                        print (e)
-                        print ("Rate limit reached for all connections. Waiting %d mins..." % nmins)
+                        print e
+                        print "Rate limit reached for all connections. Waiting %d mins..." % nmins
                         time.sleep(60 * nmins)
                         conns_tried = 0 # restart count
                     else:
@@ -82,15 +81,15 @@ class APIHandler(object):
                 fs, (_, cursor) = self.conn_.friends_ids(count=5000, cursor=cursor, **kwargs)
                 fids += [str(x) for x in fs]
                 # print "fetched %d followers so far." % len(fids)
-            except TweepError as e:
+            except TweepError, e:
                 if not 'rate limit' in e.reason.lower():
                     raise e
                 else:
                     conns_tried += 1
                     if conns_tried == len(self.auth_data):
                         nmins = 15
-                        print (e)
-                        print ("Rate limit reached for all connections. Waiting %d mins..." % nmins)
+                        print e
+                        print "Rate limit reached for all connections. Waiting %d mins..." % nmins
                         time.sleep(60 * nmins)
                         conns_tried = 0 # restart count
                     else:
@@ -124,12 +123,12 @@ class APIHandler(object):
 
                     tweets.append(tw._json) # =dia or >= desde
                 page += 1
-            except Exception as e:                
+            except Exception, e:                
                 if e.message == u'Not authorized.':
                     break
                 else:
                     print("Error: %s" % e.message)
-                    print ("waiting...")
+                    print "waiting..."
                     time.sleep(30)
                     continue
 
@@ -141,16 +140,16 @@ class APIHandler(object):
             batch = twids[start: start + 100]            
             try:
                 tweets += self.conn_.statuses_lookup(batch)
-                print ("fetched %d tweets so far." % len(tweets))
-            except TweepError as e:
+                print "fetched %d tweets so far." % len(tweets)
+            except TweepError, e:
                 if not 'rate limit' in e.reason.lower():
                     raise e
                 else:
                     conns_tried += 1
                     if conns_tried == len(self.auth_data):
                         nmins = 15
-                        print (e)
-                        print ("Rate limit reached for all connections. Waiting %d mins..." % nmins)
+                        print e
+                        print "Rate limit reached for all connections. Waiting %d mins..." % nmins
                         time.sleep(60 * nmins)
                         conns_tried = 0 # restart count
                     else:
@@ -164,15 +163,15 @@ class APIHandler(object):
             try:
                 tweet = self.conn_.get_status(twid, **kwargs)
                 return tweet
-            except TweepError as e:
+            except TweepError, e:
                 if not 'rate limit' in e.reason.lower():
                     raise e
                 else:
                     conns_tried += 1
                     if conns_tried == len(self.auth_data):
                         nmins = 5
-                        print (e)
-                        print ("Rate limit reached for all connections. Waiting %d mins..." % nmins)
+                        print e
+                        print "Rate limit reached for all connections. Waiting %d mins..." % nmins
                         time.sleep(60 * nmins)
                         conns_tried = 0 # restart count
                     else:

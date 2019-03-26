@@ -15,10 +15,12 @@ MONGO_HOST= 'mongodb://localhost/twitterdata'
 
 DB = MongoClient(MONGO_HOST).twitterdata
 
-COLLECTION = DB.abortolegal_agosto
+HASHTAG = "hayotrocamino"
+
+COLLECTION = DB["tweets_%s" % HASHTAG]
 
 def load_terminos():
-    with open('terminos_start.json') as f:
+    with open('terminos_start_discurso1m.json') as f:
         terminos = json.load(f)
     
     try:
@@ -64,7 +66,8 @@ if __name__ == '__main__':
         i += 1
         print ("Round %04d %s" % (i, datetime.now().strftime("%d/%m: %H:%M")))
 
-        terminos = load_terminos()    
+        terminos = load_terminos()
+        # terminos = [HASHTAG]   
 
         TW.get_fresh_connection()
         print(TW.conn_.auth.consumer_key)

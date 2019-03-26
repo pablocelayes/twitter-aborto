@@ -11,7 +11,7 @@ MONGO_HOST= 'mongodb://localhost/twitterdata'
 
 DB = MongoClient(MONGO_HOST).twitterdata
 
-COLLECTION = DB.abortolegal_agosto
+COLLECTION = DB.discurso1m
 
 HT_THRESHOLD = 0.01  #determina cuales hashtags se usaran para bajar y cuales no a partir de su frecuencia.
 

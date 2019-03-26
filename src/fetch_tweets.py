@@ -29,7 +29,7 @@ def fetch_tweets(db, hashtags, posicion, desde, hasta):
 
         count += 1
         if count % 500 == 0:
-            print count
+            print(count)
         if count % 10000 == 0:
             TW.get_fresh_connection()
 
